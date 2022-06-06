@@ -67,7 +67,7 @@ export async function deploy(
       ingressResource.name
     );
   }
-  const annotateNamespace = core.getInput("annotate-namespace")
+  const annotateNamespace = !(core.getInput("annotate-namespace").toLowerCase() === "false");
   if (annotateNamespace) {
     // annotate resources
     core.info("Annotating resources");

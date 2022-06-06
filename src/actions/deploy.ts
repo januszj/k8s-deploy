@@ -67,19 +67,21 @@ export async function deploy(
       ingressResource.name
     );
   }
-
-  // annotate resources
-  core.info("Annotating resources");
-  let allPods;
-  try {
-    allPods = JSON.parse((await kubectl.getAllPods()).stdout);
-  } catch (e) {
-    core.debug("Unable to parse pods: " + e);
+  const annotateNamespace = core.getInput("annotate-namespace")
+  if (annotateNamespace) {
+    // annotate resources
+    core.info("Annotating resources");
+    let allPods;
+    try {
+      allPods = JSON.parse((await kubectl.getAllPods()).stdout);
+    } catch (e) {
+      core.debug("Unable to parse pods: " + e);
+    }
+    await annotateAndLabelResources(
+      deployedManifestFiles,
+      kubectl,
+      resourceTypes,
+      allPods
+    );
   }
-  await annotateAndLabelResources(
-    deployedManifestFiles,
-    kubectl,
-    resourceTypes,
-    allPods
-  );
 }
